@@ -1,4 +1,6 @@
 import struct
+from pathlib import Path
+from config import CONFIG
 
 
 def var_len(value):
@@ -66,35 +68,48 @@ def make_midi(notes_data, tempo=120, ticks_per_beat=480):
     return header + track_chunk
 
 
-# === Stutter pattern parameters ===
-START_NOTE = 61  # C4
-START_LEN = 1  # 1/8 note in beats (0.5 = 1/8 at 4/4)
-FACTOR = 0.94  # each note is half as long
-NUM_NOTES = 128
-TEMPO = 127
-BASE_VELOCITY = 110
-VEL_DECAY_EXP = 0.15  # velocity decay factor per note
+if __name__ == "__main__":
 
-notes_data = []
-pos = 0.0
-length = START_LEN
+    """Generate stutter pattern MIDI file"""
+    # TODO: Parameters
+    start_note = 61
+    start_len = 1
+    factor = 0.94
+    num_notes = 128
+    tempo = 127
+    base_velocity = 110
+    vel_decay_exp = 0.15
+    out_dir = CONFIG["out_dir"]
 
-for i in range(NUM_NOTES):
-    if length < 0.02:
-        break
-    # Velocity decreases slightly with each note
-    vel = max(30, round(BASE_VELOCITY * (FACTOR ** (i * VEL_DECAY_EXP))))
-    notes_data.append((pos, length * 0.92, START_NOTE, vel))  # 0.92 = slight gap
-    pos += length
-    length *= FACTOR
+    notes_data = []
+    pos = 0.0
+    length = start_len
 
-midi_bytes = make_midi(notes_data, tempo=TEMPO)
+    for i in range(num_notes):
+        if length < 0.02:
+            break
+        # Velocity decreases slightly with each note
+        vel = max(
+            30,
+            round(base_velocity * (factor ** (i * vel_decay_exp))),
+        )
+        notes_data.append((pos, length * 0.92, start_note, vel))  # 0.92 = slight gap
+        pos += length
+        length *= factor
 
-out_path = "stutter_pattern.mid"
-with open(out_path, "wb") as f:
-    f.write(midi_bytes)
+    midi_bytes = make_midi(notes_data, tempo=tempo)
 
-print(f"MIDI written: {out_path}")
-print(f"Notes: {len(notes_data)}")
-for i, (p, l, pitch, vel) in enumerate(notes_data):
-    print(f"  Note {i+1}: pos={p:.4f} beats, len={l:.4f} beats, vel={vel}")
+    # Generate filename
+    filename = f"stutter_{tempo}_{factor}.mid"
+
+    file_path = out_dir / filename
+
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(file_path, "wb") as f:
+        f.write(midi_bytes)
+
+    print(f"MIDI written: {file_path}")
+    print(f"Notes: {len(notes_data)}")
+    for i, (p, l, pitch, vel) in enumerate(notes_data):
+        print(f"  Note {i+1}: pos={p:.4f} beats, len={l:.4f} beats, vel={vel}")
