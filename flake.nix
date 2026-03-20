@@ -40,10 +40,7 @@
       {
         devShells.default = pkgs.mkShell {
           name = "dev-shell";
-          packages = [
-            myPythonEnv
-            mydevEnv
-          ];
+          packages = mydevEnv ++ [ myPythonEnv ];
           shellHook = ''
             echo "DevShell is now active"
             python --version
