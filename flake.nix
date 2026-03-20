@@ -23,7 +23,7 @@
         mydevEnv = with pkgs; [
           fish
 
-          ## Nix development
+          #### Nix development
           # deadnix
           # nixd
           # nix-diff
@@ -33,7 +33,7 @@
 
         # Python & Libraries from nixpkgs
         myPythonEnv = pkgs.python3.withPackages (py: [
-          py.python-dotenv
+          # py.python-dotenv
         ]);
 
       in
