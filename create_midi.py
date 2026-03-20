@@ -67,12 +67,13 @@ def make_midi(notes_data, tempo=120, ticks_per_beat=480):
 
 
 # === Stutter pattern parameters ===
-START_NOTE = 60  # C4
+START_NOTE = 61  # C4
 START_LEN = 1  # 1/8 note in beats (0.5 = 1/8 at 4/4)
 FACTOR = 0.94  # each note is half as long
 NUM_NOTES = 128
 TEMPO = 127
 BASE_VELOCITY = 110
+VEL_DECAY_EXP = 0.15  # velocity decay factor per note
 
 notes_data = []
 pos = 0.0
@@ -82,7 +83,7 @@ for i in range(NUM_NOTES):
     if length < 0.02:
         break
     # Velocity decreases slightly with each note
-    vel = max(30, round(BASE_VELOCITY * (FACTOR ** (i * 0.15))))
+    vel = max(30, round(BASE_VELOCITY * (FACTOR ** (i * VEL_DECAY_EXP))))
     notes_data.append((pos, length * 0.92, START_NOTE, vel))  # 0.92 = slight gap
     pos += length
     length *= FACTOR
