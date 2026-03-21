@@ -1,7 +1,24 @@
+import json
 import click
 from mido import MidiFile, MidiTrack, Message, MetaMessage, bpm2tempo
 from pathlib import Path
-from config import CONFIG
+
+
+CONFIG_FILE = Path(click.get_app_dir("midi-stutter")) / "config.json"
+
+
+def load_config():
+    if CONFIG_FILE.exists():
+        return json.loads(CONFIG_FILE.read_text())
+    return {}
+
+
+def save_config(data):
+    CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    CONFIG_FILE.write_text(json.dumps(data))
+
+
+config = load_config()
 
 
 @click.command()
@@ -14,7 +31,7 @@ from config import CONFIG
     default=36,
     show_default=True,
     type=int,
-    help="MIDI note number 0–127, C1 is 36, C2 is 48, C4 is 60, ...",
+    help="MIDI note number 0–127, C1=36, C2=48, C4=60",
 )
 @click.option(
     "--start-len",
@@ -56,9 +73,20 @@ from config import CONFIG
     type=float,
     help="Velocity decay per step",
 )
-def generate(bpm, note, start_len, factor, num_notes, velocity, vel_decay_exp):
+@click.option(
+    "--out-dir",
+    prompt="Output directory",
+    default=config.get("out_dir", "."),
+    show_default=True,
+    type=click.Path(),
+    help="Output directory for MIDI files",
+)
+def generate(bpm, note, start_len, factor, num_notes, velocity, vel_decay_exp, out_dir):
     """Generate a stutter pattern MIDI file."""
     ticks_per_beat = 480
+
+    # Persist out_dir for next run
+    save_config({"out_dir": out_dir})
 
     # Build note list
     notes_data = []
@@ -99,9 +127,9 @@ def generate(bpm, note, start_len, factor, num_notes, velocity, vel_decay_exp):
             track.append(Message("note_off", note=pitch, velocity=0, time=delta))
 
     # Save
-    out_dir = Path(CONFIG["out_dir"])
-    out_dir.mkdir(parents=True, exist_ok=True)
-    file_path = out_dir / f"stutter_bpm{bpm}_factor{factor}_velexp{vel_decay_exp}.mid"
+    out_path = Path(out_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+    file_path = out_path / f"stutter_bpm{bpm}_factor{factor}_velexp{vel_decay_exp}.mid"
     mid.save(file_path)
 
     click.echo(f"\nMIDI written: {file_path}")
