@@ -8,7 +8,7 @@ dependencies = [
 ]
 
 [project.scripts]
-create-midi = "create_midi:generate"
+create-midi-stutter = "create_midi:generate"
 
 [build-system]
 requires = ["setuptools"]
