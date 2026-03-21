@@ -1,0 +1,14 @@
+[project]
+name = "midi-stutter"
+version = "0.1.0"
+dependencies = [
+    "click",
+    "mido",
+]
+
+[project.scripts]
+create-midi = "create_midi:generate"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.backends.legacy:build"
