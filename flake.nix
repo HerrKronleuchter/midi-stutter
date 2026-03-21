@@ -48,7 +48,7 @@
           shellHook = ''
             echo "DevShell is now active"
             python --version
-            exec fish
+            exec fish --init-command "alias create-midi='python ${toString ./.}/create_midi.py'"
           '';
         };
         devShells.nix = pkgs.mkShell {
