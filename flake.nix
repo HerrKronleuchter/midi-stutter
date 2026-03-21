@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils"; 
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
@@ -22,19 +22,22 @@
         # individual pkgs
         mydevEnv = with pkgs; [
           fish
-
-          #### Nix development
-          # deadnix
-          # nixd
-          # nix-diff
-          # nixfmt-rfc-style
-          # statix
         ];
 
         # Python & Libraries from nixpkgs
         myPythonEnv = pkgs.python3.withPackages (py: [
           # py.python-dotenv
         ]);
+
+        # Nix development tools
+        nixdevEnv = with pkgs; [
+          nixd
+          deadnix
+          nixd
+          nix-diff
+          nixfmt-rfc-style
+          statix
+        ];
 
       in
       {
@@ -47,7 +50,16 @@
             exec fish
           '';
         };
+        devShells.nix = pkgs.mkShell {
+          name = "nixdev-shell";
+          packages = [
+            nixdevEnv
+
+          ];
+          shellHook = ''
+            echo "NixDevShell is now active"
+          '';
+        };
       }
     );
 }
- 
