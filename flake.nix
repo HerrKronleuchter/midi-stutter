@@ -26,7 +26,7 @@
 
         # Python & Libraries from nixpkgs
         myPythonEnv = pkgs.python3.withPackages (py: [
-          # py.python-dotenv
+          py.click
         ]);
 
         # Nix development tools
