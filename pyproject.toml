@@ -12,4 +12,7 @@ create-midi = "create_midi:generate"
 
 [build-system]
 requires = ["setuptools"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["create_midi"]
