@@ -49,7 +49,7 @@ The output directory is saved and reused on the next run.
 ## Parameters
 
 | Parameter | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | `--bpm` | 127 | Tempo in BPM |
 | `--note` | 36 | MIDI note number (C1=36, C2=48, C4=60) |
 | `--start-len` | 1.0 | Initial note length in beats |
