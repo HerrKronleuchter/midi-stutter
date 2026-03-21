@@ -27,6 +27,7 @@
         # Python & Libraries from nixpkgs
         myPythonEnv = pkgs.python3.withPackages (py: [
           py.click
+          py.mido
         ]);
 
         # Nix development tools
