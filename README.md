@@ -5,6 +5,8 @@ I used AI in some parts.
 
 Generates MIDI clips with a stutter effect — each note is shorter and quieter than the last.
 
+![Screenshot from Bitwig 6.0](midi-stutter.png)
+
 ## Installation
 
 ### With Nix
